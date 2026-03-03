@@ -7,572 +7,288 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    /* ===== VARIÁVEIS ===== */
     :root {
-      --neon:   #06d9f5;
-      --neon2:  #ff00aa;
-      --win:    #00ff88;
-      --lose:   #ff4d4d;
-      --bg:     #0a0a0f;
-      --card:   #12121a;
-      --card2:  #1a1a28;
-      --border: rgba(6,217,245,0.3);
-      --x-cor:  #06d9f5;
-      --o-cor:  #ff4d4d;
-      --text:   #e0e0f0;
-      --muted:  #6a6a8a;
+      --neon:#06d9f5;--neon2:#ff00aa;--win:#00ff88;--lose:#ff4d4d;
+      --bg:#0a0a0f;--card:#12121a;--card2:#1a1a28;--border:rgba(6,217,245,0.3);
+      --x-cor:#06d9f5;--o-cor:#ff4d4d;--text:#e0e0f0;--muted:#6a6a8a;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;background-image:radial-gradient(ellipse at 20% 50%,rgba(6,217,245,.05) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,0,170,.05) 0%,transparent 60%)}
+    .scanlines{position:fixed;inset:0;pointer-events:none;z-index:10;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px)}
+    .tela{width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .tela.hidden{display:none!important}
+    .cartao{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2rem;text-align:center;box-shadow:0 0 40px rgba(6,217,245,.1),0 0 80px rgba(6,217,245,.05),inset 0 1px 0 rgba(6,217,245,.1);max-width:520px;width:100%;position:relative;animation:cartaoEntrar .4s ease}
+    .cartao-jogo{max-width:700px}
+    @keyframes cartaoEntrar{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.8rem;color:var(--neon);text-shadow:0 0 20px rgba(6,217,245,.6);letter-spacing:3px;margin-bottom:6px}
+    .subtitulo{color:var(--muted);font-size:1rem;font-weight:300;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+    .logo-area{margin-bottom:1.5rem}
+    .logo-icon{display:block;font-size:3rem;margin-bottom:.5rem;filter:drop-shadow(0 0 12px rgba(6,217,245,.8))}
+    .placar-global{display:flex;align-items:center;justify-content:center;gap:1.5rem;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.8rem 2rem;margin-bottom:1.5rem}
+    .stat{display:flex;flex-direction:column;align-items:center;gap:2px}
+    .stat-label{font-size:.65rem;letter-spacing:2px;color:var(--muted);font-family:'Orbitron',sans-serif}
+    .stat-val{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:700;color:var(--neon);text-shadow:0 0 10px rgba(6,217,245,.5)}
+    .stat-divider{color:var(--border);font-size:1.5rem}
+    .menu-botoes{display:flex;flex-direction:column;gap:10px}
+    .btn-menu{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:14px 20px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;justify-content:center;gap:10px}
+    .btn-menu:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 0 16px rgba(6,217,245,.2);transform:translateY(-2px)}
+    .btn-menu.btn-destaque{border-color:rgba(6,217,245,.5);background:linear-gradient(135deg,rgba(6,217,245,.1),rgba(255,0,170,.05))}
+    .btn-menu.btn-destaque:hover{background:linear-gradient(135deg,rgba(6,217,245,.2),rgba(255,0,170,.1));box-shadow:0 0 24px rgba(6,217,245,.3)}
+    .btn-icon{font-size:1.2rem}
+    .btn-voltar{background:none;border:none;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:1rem;cursor:pointer;padding:8px 16px;transition:color .2s;letter-spacing:1px;margin-top:10px}
+    .btn-voltar:hover{color:var(--neon)}
+    .form-group{text-align:left;margin-bottom:1rem}
+    .form-group label{display:block;font-size:.75rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;font-family:'Orbitron',sans-serif}
+    .form-group input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:1rem;outline:none;transition:border-color .2s,box-shadow .2s}
+    .form-group input:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(6,217,245,.2)}
+    .msg-feedback{padding:10px 14px;border-radius:8px;margin-bottom:1rem;font-weight:600;font-size:.95rem}
+    .msg-feedback.hidden{display:none}
+    .msg-feedback.sucesso{background:rgba(0,255,136,.1);border:1px solid var(--win);color:var(--win)}
+    .msg-feedback.erro{background:rgba(255,77,77,.1);border:1px solid var(--lose);color:var(--lose)}
 
-    /* ===== RESET ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* MODO VELHA */
+    .modo-velha{display:flex;gap:8px;justify-content:center;margin-bottom:1rem;flex-wrap:wrap}
+    .btn-modo{padding:8px 20px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;letter-spacing:1px;transition:all .2s;border:1px solid}
+    .btn-modo-pvp{background:rgba(6,217,245,.1);border-color:var(--neon);color:var(--neon)}
+    .btn-modo-ia{background:rgba(255,0,170,.1);border-color:var(--neon2);color:var(--neon2)}
+    .btn-modo.ativo{filter:brightness(1.4);box-shadow:0 0 14px rgba(255,0,170,.4)}
+    .btn-modo:hover{transform:translateY(-2px);filter:brightness(1.2)}
+    .badge-ia{display:inline-block;background:rgba(255,0,170,.15);border:1px solid var(--neon2);color:var(--neon2);font-family:'Orbitron',sans-serif;font-size:.6rem;padding:2px 8px;border-radius:20px;letter-spacing:2px;margin-left:6px;vertical-align:middle;animation:pulseBadge 1.5s infinite alternate}
+    @keyframes pulseBadge{from{box-shadow:0 0 4px rgba(255,0,170,.3)}to{box-shadow:0 0 12px rgba(255,0,170,.7)}}
+    .ia-thinking{display:inline-block;color:var(--neon2);font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:2px;animation:thinking 1s infinite}
+    @keyframes thinking{0%,100%{opacity:1}50%{opacity:.3}}
+    .dif-ia{display:none;gap:6px;justify-content:center;margin-bottom:.8rem;flex-wrap:wrap}
+    .dif-ia.visivel{display:flex}
+    .btn-dif-ia{padding:6px 14px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;letter-spacing:1px;transition:all .2s;border:1px solid;opacity:.6}
+    .btn-dif-ia.ativo{opacity:1;box-shadow:0 0 10px rgba(255,0,170,.3)}
+    .btn-dif-ia:hover{opacity:1;transform:translateY(-1px)}
+    .dif-facil{border-color:var(--win);color:var(--win);background:rgba(0,255,136,.07)}
+    .dif-medio{border-color:#ffcc00;color:#ffcc00;background:rgba(255,204,0,.07)}
+    .dif-hard{border-color:var(--neon2);color:var(--neon2);background:rgba(255,0,170,.07)}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
-      background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(6,217,245,0.05) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(255,0,170,0.05) 0%, transparent 60%);
-    }
+    .status-jogo{font-family:'Orbitron',sans-serif;font-size:1rem;letter-spacing:2px;margin:.8rem 0 1.2rem;min-height:1.6rem;color:var(--text)}
+    .jogador-x{color:var(--x-cor);text-shadow:0 0 8px rgba(6,217,245,.6)}
+    .jogador-o{color:var(--o-cor);text-shadow:0 0 8px rgba(255,77,77,.6)}
+    .jogador-ia{color:var(--neon2);text-shadow:0 0 8px rgba(255,0,170,.6)}
+    .vitoria-texto{color:var(--win);text-shadow:0 0 12px rgba(0,255,136,.6);animation:pulso .8s infinite alternate}
+    .derrota-texto{color:var(--lose);text-shadow:0 0 12px rgba(255,77,77,.6)}
+    .empate-texto{color:#ffcc00;text-shadow:0 0 12px rgba(255,204,0,.6)}
+    @keyframes pulso{from{opacity:.8}to{opacity:1}}
 
-    /* ===== SCANLINES ===== */
-    .scanlines {
-      position: fixed; inset: 0; pointer-events: none; z-index: 10;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-    }
+    .grid-velha{display:grid;grid-template-columns:repeat(3,90px);grid-template-rows:repeat(3,90px);gap:6px;justify-content:center;margin:0 auto 1.2rem}
+    .celula{width:90px;height:90px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;cursor:pointer;transition:all .15s ease;user-select:none}
+    .celula:hover:not(.celula-ocupada):not(.celula-bloqueada){border-color:var(--neon);background:rgba(6,217,245,.08);transform:scale(1.04)}
+    .celula.celula-x{color:var(--x-cor);text-shadow:0 0 12px rgba(6,217,245,.7);border-color:rgba(6,217,245,.4)}
+    .celula.celula-o{color:var(--o-cor);text-shadow:0 0 12px rgba(255,77,77,.7);border-color:rgba(255,77,77,.4)}
+    .celula.celula-ia{color:var(--neon2);text-shadow:0 0 12px rgba(255,0,170,.7);border-color:rgba(255,0,170,.4)}
+    .celula.celula-vencedora{background:rgba(0,255,136,.15);border-color:var(--win);box-shadow:0 0 16px rgba(0,255,136,.3);animation:pulso .6s infinite alternate}
+    .celula.celula-ocupada{cursor:default}
+    .celula.celula-bloqueada{cursor:not-allowed;opacity:.7}
+    .jogo-acoes{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-    /* ===== TELAS ===== */
-    .tela {
-      width: 100%; display: flex; align-items: center;
-      justify-content: center; min-height: 100vh; padding: 20px;
-    }
-    .tela.hidden { display: none !important; }
-
-    /* ===== CARTÃO ===== */
-    .cartao {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(6,217,245,0.1), 0 0 80px rgba(6,217,245,0.05), inset 0 1px 0 rgba(6,217,245,0.1);
-      max-width: 520px;
-      width: 100%;
-      position: relative;
-      animation: cartaoEntrar 0.4s ease;
-    }
-    .cartao-jogo { max-width: 700px; }
-    @keyframes cartaoEntrar {
-      from { opacity: 0; transform: translateY(20px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* ===== TIPOGRAFIA ===== */
-    h1 {
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.8rem;
-      color: var(--neon); text-shadow: 0 0 20px rgba(6,217,245,0.6);
-      letter-spacing: 3px; margin-bottom: 6px;
-    }
-    .subtitulo {
-      color: var(--muted); font-size: 1rem; font-weight: 300;
-      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem;
-    }
-    .logo-area { margin-bottom: 1.5rem; }
-    .logo-icon {
-      display: block; font-size: 3rem; margin-bottom: 0.5rem;
-      filter: drop-shadow(0 0 12px rgba(6,217,245,0.8));
-    }
-
-    /* ===== PLACAR ===== */
-    .placar-global {
-      display: flex; align-items: center; justify-content: center; gap: 1.5rem;
-      background: var(--card2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0.8rem 2rem; margin-bottom: 1.5rem;
-    }
-    .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .stat-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); font-family: 'Orbitron', sans-serif; }
-    .stat-val { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--neon); text-shadow: 0 0 10px rgba(6,217,245,0.5); }
-    .stat-divider { color: var(--border); font-size: 1.5rem; }
-
-    /* ===== BOTÕES ===== */
-    .menu-botoes { display: flex; flex-direction: column; gap: 10px; }
-    .btn-menu {
-      background: var(--card2); border: 1px solid var(--border); color: var(--text);
-      padding: 14px 20px; border-radius: 10px; font-family: 'Rajdhani', sans-serif;
-      font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; cursor: pointer;
-      transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .btn-menu:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 16px rgba(6,217,245,0.2); transform: translateY(-2px); }
-    .btn-menu.btn-destaque { border-color: rgba(6,217,245,0.5); background: linear-gradient(135deg, rgba(6,217,245,0.1), rgba(255,0,170,0.05)); }
-    .btn-menu.btn-destaque:hover { background: linear-gradient(135deg, rgba(6,217,245,0.2), rgba(255,0,170,0.1)); box-shadow: 0 0 24px rgba(6,217,245,0.3); }
-    .btn-icon { font-size: 1.2rem; }
-    .btn-voltar {
-      background: none; border: none; color: var(--muted); font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem; cursor: pointer; padding: 8px 16px; transition: color 0.2s; letter-spacing: 1px; margin-top: 10px;
-    }
-    .btn-voltar:hover { color: var(--neon); }
-
-    /* ===== FORMULÁRIO ===== */
-    .form-group { text-align: left; margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; font-family: 'Orbitron', sans-serif; }
-    .form-group input {
-      width: 100%; background: var(--card2); border: 1px solid var(--border); border-radius: 8px;
-      padding: 12px 14px; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 1rem; outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .form-group input:focus { border-color: var(--neon); box-shadow: 0 0 12px rgba(6,217,245,0.2); }
-    .msg-feedback { padding: 10px 14px; border-radius: 8px; margin-bottom: 1rem; font-weight: 600; font-size: 0.95rem; }
-    .msg-feedback.hidden { display: none; }
-    .msg-feedback.sucesso { background: rgba(0,255,136,0.1); border: 1px solid var(--win); color: var(--win); }
-    .msg-feedback.erro    { background: rgba(255,77,77,0.1);  border: 1px solid var(--lose); color: var(--lose); }
-
-    /* ===== STATUS JOGO ===== */
-    .status-jogo { font-family: 'Orbitron', sans-serif; font-size: 1rem; letter-spacing: 2px; margin: 0.8rem 0 1.2rem; min-height: 1.6rem; color: var(--text); }
-    .jogador-x { color: var(--x-cor); text-shadow: 0 0 8px rgba(6,217,245,0.6); }
-    .jogador-o { color: var(--o-cor); text-shadow: 0 0 8px rgba(255,77,77,0.6); }
-    .vitoria-texto { color: var(--win);  text-shadow: 0 0 12px rgba(0,255,136,0.6); animation: pulso 0.8s infinite alternate; }
-    .derrota-texto { color: var(--lose); text-shadow: 0 0 12px rgba(255,77,77,0.6); }
-    .empate-texto  { color: #ffcc00;     text-shadow: 0 0 12px rgba(255,204,0,0.6); }
-    @keyframes pulso { from { opacity: 0.8; } to { opacity: 1; } }
-
-    /* ===== JOGO DA VELHA ===== */
-    .grid-velha {
-      display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px);
-      gap: 6px; justify-content: center; margin: 0 auto 1.2rem;
-    }
-    .celula {
-      width: 90px; height: 90px; background: var(--card2); border: 1px solid var(--border);
-      border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900;
-      cursor: pointer; transition: all 0.15s ease; user-select: none;
-    }
-    .celula:hover:not(.celula-ocupada) { border-color: var(--neon); background: rgba(6,217,245,0.08); transform: scale(1.04); }
-    .celula.celula-x { color: var(--x-cor); text-shadow: 0 0 12px rgba(6,217,245,0.7); border-color: rgba(6,217,245,0.4); }
-    .celula.celula-o { color: var(--o-cor); text-shadow: 0 0 12px rgba(255,77,77,0.7); border-color: rgba(255,77,77,0.4); }
-    .celula.celula-vencedora { background: rgba(0,255,136,0.15); border-color: var(--win); box-shadow: 0 0 16px rgba(0,255,136,0.3); animation: pulso 0.6s infinite alternate; }
-    .celula.celula-ocupada { cursor: default; }
-    .jogo-acoes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-    /* ===== CAMPO MINADO ===== */
-    .controles-mina { display: flex; gap: 8px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
-    .btn-dif { padding: 8px 18px; border-radius: 8px; border: 1px solid; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
-    .btn-facil   { background: rgba(0,255,136,0.1); border-color: var(--win);  color: var(--win); }
-    .btn-medio   { background: rgba(255,204,0,0.1); border-color: #ffcc00;     color: #ffcc00; }
-    .btn-dificil { background: rgba(255,77,77,0.1); border-color: var(--lose); color: var(--lose); }
-    .btn-dif:hover { transform: translateY(-2px); filter: brightness(1.2); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .grid-mina { display: grid; gap: 2px; justify-content: center; margin: 0 auto; overflow: auto; max-width: 100%; padding: 4px; }
-    .quadrado {
-      width: 28px; height: 28px; background: #2a2a3e; border: 1px solid #3a3a54; border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 12px; font-weight: 700; user-select: none; transition: background 0.1s;
-    }
-    .quadrado:hover:not(.aberto):not(.bomba) { background: #3a3a54; border-color: var(--neon); }
-    .quadrado.aberto  { background: #e8e8f0; color: #111; cursor: default; border-color: #ccc; }
-    .quadrado.bomba   { background: rgba(255,77,77,0.7); border-color: var(--lose); animation: boom 0.3s ease; }
-    @keyframes boom { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
-
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 480px) {
-      .cartao { padding: 1.5rem 1rem; }
-      h1 { font-size: 1.4rem; }
-      .grid-velha { grid-template-columns: repeat(3, 76px); grid-template-rows: repeat(3, 76px); }
-      .celula { width: 76px; height: 76px; font-size: 1.8rem; }
-      .quadrado { width: 22px; height: 22px; font-size: 10px; }
-    }
+    .controles-mina{display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+    .btn-dif{padding:8px 18px;border-radius:8px;border:1px solid;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:1px}
+    .btn-facil{background:rgba(0,255,136,.1);border-color:var(--win);color:var(--win)}
+    .btn-medio{background:rgba(255,204,0,.1);border-color:#ffcc00;color:#ffcc00}
+    .btn-dificil{background:rgba(255,77,77,.1);border-color:var(--lose);color:var(--lose)}
+    .btn-dif:hover{transform:translateY(-2px);filter:brightness(1.2);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+    .grid-mina{display:grid;gap:2px;justify-content:center;margin:0 auto;overflow:auto;max-width:100%;padding:4px}
+    .quadrado{width:28px;height:28px;background:#2a2a3e;border:1px solid #3a3a54;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700;user-select:none;transition:background .1s}
+    .quadrado:hover:not(.aberto):not(.bomba){background:#3a3a54;border-color:var(--neon)}
+    .quadrado.aberto{background:#e8e8f0;color:#111;cursor:default;border-color:#ccc}
+    .quadrado.bomba{background:rgba(255,77,77,.7);border-color:var(--lose);animation:boom .3s ease}
+    @keyframes boom{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+    @media(max-width:480px){.cartao{padding:1.5rem 1rem}h1{font-size:1.4rem}.grid-velha{grid-template-columns:repeat(3,76px);grid-template-rows:repeat(3,76px)}.celula{width:76px;height:76px;font-size:1.8rem}.quadrado{width:22px;height:22px;font-size:10px}}
   </style>
 </head>
 <body>
+<div class="scanlines"></div>
 
-  <div class="scanlines"></div>
-
-  <!-- ══════════════ TELA INICIAL ══════════════ -->
-  <div id="tela-inicial" class="tela">
-    <div class="cartao">
-      <div class="logo-area">
-        <span class="logo-icon">⚔️</span>
-        <h1>MOSQUETEIROS</h1>
-        <p class="subtitulo">Hub Interativo — SI &amp; ADS</p>
-      </div>
-      <div class="placar-global">
-        <div class="stat">
-          <span class="stat-label">VITÓRIAS</span>
-          <span class="stat-val" id="v-global">0</span>
-        </div>
-        <div class="stat-divider">|</div>
-        <div class="stat">
-          <span class="stat-label">DERROTAS</span>
-          <span class="stat-val" id="d-global">0</span>
-        </div>
-      </div>
-      <div class="menu-botoes">
-        <button class="btn-menu"             data-ir="tela-login"><span class="btn-icon">🗄️</span> Sistema Back-end</button>
-        <button class="btn-menu btn-destaque" data-ir="tela-velha"><span class="btn-icon">🎮</span> Jogo da Velha</button>
-        <button class="btn-menu btn-destaque" data-ir="tela-mina"> <span class="btn-icon">💣</span> Campo Minado</button>
-      </div>
+<div id="tela-inicial" class="tela">
+  <div class="cartao">
+    <div class="logo-area">
+      <span class="logo-icon">⚔️</span>
+      <h1>MOSQUETEIROS</h1>
+      <p class="subtitulo">Hub Interativo — SI &amp; ADS</p>
+    </div>
+    <div class="placar-global">
+      <div class="stat"><span class="stat-label">VITÓRIAS</span><span class="stat-val" id="v-global">0</span></div>
+      <div class="stat-divider">|</div>
+      <div class="stat"><span class="stat-label">DERROTAS</span><span class="stat-val" id="d-global">0</span></div>
+    </div>
+    <div class="menu-botoes">
+      <button class="btn-menu" data-ir="tela-login"><span class="btn-icon">🗄️</span> Sistema Back-end</button>
+      <button class="btn-menu btn-destaque" data-ir="tela-velha"><span class="btn-icon">🎮</span> Jogo da Velha</button>
+      <button class="btn-menu btn-destaque" data-ir="tela-mina"><span class="btn-icon">💣</span> Campo Minado</button>
     </div>
   </div>
+</div>
 
-  <!-- ══════════════ TELA LOGIN ══════════════ -->
-  <div id="tela-login" class="tela hidden">
-    <div class="cartao">
-      <h1>Cadastro</h1>
-      <p class="subtitulo">Registre-se no sistema</p>
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="email" placeholder="seu@email.com">
-      </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" id="senha" placeholder="••••••••">
-      </div>
-      <div id="msg-cadastro" class="msg-feedback hidden"></div>
-      <button class="btn-menu btn-destaque" id="btn-cadastro"><span class="btn-icon">💾</span> Salvar no Banco</button>
-      <button class="btn-voltar" data-ir="tela-inicial">← Voltar</button>
+<div id="tela-login" class="tela hidden">
+  <div class="cartao">
+    <h1>Cadastro</h1>
+    <p class="subtitulo">Registre-se no sistema</p>
+    <div class="form-group"><label>E-mail</label><input type="email" id="email" placeholder="seu@email.com"></div>
+    <div class="form-group"><label>Senha</label><input type="password" id="senha" placeholder="••••••••"></div>
+    <div id="msg-cadastro" class="msg-feedback hidden"></div>
+    <button class="btn-menu btn-destaque" id="btn-cadastro"><span class="btn-icon">💾</span> Salvar no Banco</button>
+    <button class="btn-voltar" data-ir="tela-inicial">← Voltar</button>
+  </div>
+</div>
+
+<div id="tela-velha" class="tela hidden">
+  <div class="cartao cartao-jogo">
+    <h1>Jogo da Velha</h1>
+    <div class="modo-velha">
+      <button class="btn-modo btn-modo-pvp ativo" id="btn-pvp">👥 2 Jogadores</button>
+      <button class="btn-modo btn-modo-ia" id="btn-ia">🤖 vs IA <span class="badge-ia">CPU</span></button>
+    </div>
+    <div class="dif-ia" id="dif-ia">
+      <button class="btn-dif-ia dif-facil ativo" data-dif="facil">😊 Fácil</button>
+      <button class="btn-dif-ia dif-medio" data-dif="medio">😐 Médio</button>
+      <button class="btn-dif-ia dif-hard" data-dif="hard">🧠 Imbatível</button>
+    </div>
+    <p id="status-velha" class="status-jogo"></p>
+    <div class="grid-velha" id="tabuleiro-velha"></div>
+    <div class="jogo-acoes">
+      <button class="btn-menu" id="btn-reset-velha">🔄 Reiniciar</button>
+      <button class="btn-voltar" data-ir="tela-inicial">← Menu</button>
     </div>
   </div>
+</div>
 
-  <!-- ══════════════ TELA JOGO DA VELHA ══════════════ -->
-  <div id="tela-velha" class="tela hidden">
-    <div class="cartao cartao-jogo">
-      <h1>Jogo da Velha</h1>
-      <p id="status-velha" class="status-jogo"></p>
-      <div class="grid-velha" id="tabuleiro-velha"></div>
-      <div class="jogo-acoes">
-        <button class="btn-menu" id="btn-reset-velha">🔄 Reiniciar</button>
-        <button class="btn-voltar" data-ir="tela-inicial">← Menu</button>
-      </div>
+<div id="tela-mina" class="tela hidden">
+  <div class="cartao cartao-jogo">
+    <h1>Campo Minado</h1>
+    <div class="controles-mina">
+      <button class="btn-dif btn-facil" data-mina="8,8,10">😊 Fácil</button>
+      <button class="btn-dif btn-medio" data-mina="12,12,25">😐 Médio</button>
+      <button class="btn-dif btn-dificil" data-mina="16,16,40">😰 Difícil</button>
     </div>
+    <div id="status-mina" class="status-jogo"></div>
+    <div id="grid-mina" class="grid-mina"></div>
+    <button class="btn-voltar" style="margin-top:16px" data-ir="tela-inicial">← Menu</button>
   </div>
+</div>
 
-  <!-- ══════════════ TELA CAMPO MINADO ══════════════ -->
-  <div id="tela-mina" class="tela hidden">
-    <div class="cartao cartao-jogo">
-      <h1>Campo Minado</h1>
-      <div class="controles-mina">
-        <button class="btn-dif btn-facil"   data-mina="8,8,10">😊 Fácil</button>
-        <button class="btn-dif btn-medio"   data-mina="12,12,25">😐 Médio</button>
-        <button class="btn-dif btn-dificil" data-mina="16,16,40">😰 Difícil</button>
-      </div>
-      <div id="status-mina" class="status-jogo"></div>
-      <div id="grid-mina" class="grid-mina"></div>
-      <button class="btn-voltar" style="margin-top:16px" data-ir="tela-inicial">← Menu</button>
-    </div>
-  </div>
+<script>
+var vitorias=0,derrotas=0;
+function irPara(id){document.querySelectorAll('.tela').forEach(function(t){t.classList.add('hidden')});var d=document.getElementById(id);if(!d)return;d.classList.remove('hidden');if(id==='tela-velha')velha.iniciar();else if(id==='tela-mina')mina.iniciar(8,8,10);else if(id==='tela-inicial')atualizarPlacar()}
+function atualizarPlacar(){document.getElementById('v-global').innerText=vitorias;document.getElementById('d-global').innerText=derrotas}
+function fazerCadastro(){var e=document.getElementById('email').value.trim(),s=document.getElementById('senha').value.trim(),m=document.getElementById('msg-cadastro');if(!e||!s){showMsg(m,'Preencha todos os campos!','erro');return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){showMsg(m,'E-mail inválido!','erro');return}if(s.length<6){showMsg(m,'Senha deve ter 6+ caracteres!','erro');return}showMsg(m,'✅ Cadastro realizado: '+e,'sucesso');document.getElementById('email').value='';document.getElementById('senha').value=''}
+function showMsg(el,texto,tipo){el.textContent=texto;el.className='msg-feedback '+tipo;clearTimeout(el._timer);el._timer=setTimeout(function(){el.className='msg-feedback hidden'},3500)}
 
-  <script>
-  // ================================================================
-  //  PORTAL MOSQUETEIROS — script único
-  // ================================================================
+var velha=(function(){
+  var jogador='X',tabuleiro=Array(9).fill(''),ativo=false,vencedoras=[],modoIA=false,dificuldade='facil',iaJogando=false;
+  var COMBOS=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
-  // ── Estado global ──────────────────────────────────────────────
-  var vitorias = 0;
-  var derrotas  = 0;
+  function checarVenc(tab){for(var i=0;i<COMBOS.length;i++){var a=COMBOS[i][0],b=COMBOS[i][1],c=COMBOS[i][2];if(tab[a]&&tab[a]===tab[b]&&tab[a]===tab[c])return tab[a]}return null}
 
-  // ================================================================
-  //  NAVEGAÇÃO
-  // ================================================================
-  function irPara(id) {
-    document.querySelectorAll('.tela').forEach(function(t) {
-      t.classList.add('hidden');
-    });
-    var destino = document.getElementById(id);
-    if (!destino) return;
-    destino.classList.remove('hidden');
-
-    if      (id === 'tela-velha')   velha.iniciar();
-    else if (id === 'tela-mina')    mina.iniciar(8, 8, 10);
-    else if (id === 'tela-inicial') atualizarPlacar();
+  function minimax(tab,isMax,depth,alpha,beta){
+    var v=checarVenc(tab);
+    if(v==='O')return 10-depth;
+    if(v==='X')return depth-10;
+    var livres=tab.map(function(v,i){return v===''?i:-1}).filter(function(v){return v!==-1});
+    if(!livres.length)return 0;
+    if(isMax){var best=-Infinity;for(var i=0;i<livres.length;i++){tab[livres[i]]='O';var val=minimax(tab,false,depth+1,alpha,beta);tab[livres[i]]='';best=Math.max(best,val);alpha=Math.max(alpha,best);if(beta<=alpha)break}return best}
+    else{var best=Infinity;for(var i=0;i<livres.length;i++){tab[livres[i]]='X';var val=minimax(tab,true,depth+1,alpha,beta);tab[livres[i]]='';best=Math.min(best,val);beta=Math.min(beta,best);if(beta<=alpha)break}return best}
   }
 
-  function atualizarPlacar() {
-    document.getElementById('v-global').innerText = vitorias;
-    document.getElementById('d-global').innerText = derrotas;
+  function melhorJogada(){
+    var livres=tabuleiro.map(function(v,i){return v===''?i:-1}).filter(function(v){return v!==-1});
+    if(dificuldade==='facil'&&Math.random()<0.4)return livres[Math.floor(Math.random()*livres.length)];
+    if(dificuldade==='medio'&&Math.random()<0.2)return livres[Math.floor(Math.random()*livres.length)];
+    var bestVal=-Infinity,bestIdx=livres[0],tab=tabuleiro.slice();
+    for(var i=0;i<livres.length;i++){tab[livres[i]]='O';var val=minimax(tab,false,0,-Infinity,Infinity);tab[livres[i]]='';if(val>bestVal){bestVal=val;bestIdx=livres[i]}}
+    return bestIdx;
   }
 
-  // ================================================================
-  //  CADASTRO
-  // ================================================================
-  function fazerCadastro() {
-    var email = document.getElementById('email').value.trim();
-    var senha = document.getElementById('senha').value.trim();
-    var msg   = document.getElementById('msg-cadastro');
+  function setStatus(h){document.getElementById('status-velha').innerHTML=h}
 
-    if (!email || !senha)                             { showMsg(msg, 'Preencha todos os campos!', 'erro');      return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))   { showMsg(msg, 'E-mail inválido!', 'erro');               return; }
-    if (senha.length < 6)                             { showMsg(msg, 'Senha deve ter 6+ caracteres!', 'erro'); return; }
-
-    showMsg(msg, '✅ Cadastro realizado: ' + email, 'sucesso');
-    document.getElementById('email').value = '';
-    document.getElementById('senha').value = '';
+  function render(){
+    var c=document.getElementById('tabuleiro-velha'),cells=c.children;
+    for(var i=0;i<9;i++){
+      var cel=cells[i],val=tabuleiro[i],block=modoIA&&(jogador==='O'||iaJogando);
+      cel.className='celula';cel.textContent=val;
+      if(val==='X')cel.classList.add('celula-x');
+      if(val==='O')cel.classList.add(modoIA?'celula-ia':'celula-o');
+      if(val)cel.classList.add('celula-ocupada');
+      if(vencedoras.indexOf(i)!==-1)cel.classList.add('celula-vencedora');
+      if(!ativo||block)cel.classList.add('celula-bloqueada');
+    }
   }
 
-  function showMsg(el, texto, tipo) {
-    el.textContent = texto;
-    el.className = 'msg-feedback ' + tipo;
-    clearTimeout(el._timer);
-    el._timer = setTimeout(function() { el.className = 'msg-feedback hidden'; }, 3500);
+  function checar(){for(var i=0;i<COMBOS.length;i++){var a=COMBOS[i][0],b=COMBOS[i][1],c=COMBOS[i][2];if(tabuleiro[a]&&tabuleiro[a]===tabuleiro[b]&&tabuleiro[a]===tabuleiro[c])return COMBOS[i]}return null}
+
+  function processar(){
+    var combo=checar();
+    if(combo){ativo=false;vencedoras=combo;iaJogando=false;render();
+      if(modoIA){if(jogador==='X'){setStatus('<span class="vitoria-texto">Você VENCEU! 🎉</span>');vitorias++}else{setStatus('<span class="derrota-texto">A IA VENCEU! 🤖</span>');derrotas++}}
+      else{setStatus('<span class="vitoria-texto">Jogador '+jogador+' VENCEU! 🎉</span>');vitorias++}
+      atualizarPlacar();return true}
+    if(tabuleiro.indexOf('')===-1){ativo=false;iaJogando=false;render();setStatus('<span class="empate-texto">Empate! 🤝</span>');return true}
+    return false;
   }
 
-  // ================================================================
-  //  JOGO DA VELHA
-  // ================================================================
-  var velha = (function() {
-    var jogador    = 'X';
-    var tabuleiro  = Array(9).fill('');
-    var ativo      = false;
-    var vencedoras = [];
+  function jogadaIA(){
+    if(!ativo||jogador!=='O')return;
+    iaJogando=true;render();setStatus('<span class="ia-thinking">🤖 IA calculando...</span>');
+    setTimeout(function(){
+      if(!ativo){iaJogando=false;return}
+      var idx=melhorJogada();tabuleiro[idx]='O';iaJogando=false;
+      if(!processar()){jogador='X';render();setStatus('Sua vez: <span class="jogador-x">X</span>')}
+    },450+Math.random()*300);
+  }
 
-    var COMBOS = [
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
-    ];
-
-    function setStatus(html) {
-      document.getElementById('status-velha').innerHTML = html;
+  function onClick(e){
+    if(!ativo||iaJogando)return;
+    if(modoIA&&jogador==='O')return;
+    var cel=e.target.closest('.celula');if(!cel)return;
+    var idx=parseInt(cel.dataset.index);if(isNaN(idx)||tabuleiro[idx])return;
+    tabuleiro[idx]=jogador;
+    if(!processar()){
+      jogador=jogador==='X'?'O':'X';render();
+      if(modoIA&&jogador==='O'){jogadaIA()}
+      else{var cor=jogador==='X'?'jogador-x':'jogador-o';setStatus('Vez do: <span class="'+cor+'">'+jogador+'</span>')}
     }
+  }
 
-    function render() {
-      var container = document.getElementById('tabuleiro-velha');
-      var cells = container.children;
-      for (var i = 0; i < 9; i++) {
-        var cel = cells[i];
-        var val = tabuleiro[i];
-        cel.className = 'celula';
-        cel.textContent = val;
-        if (val === 'X') cel.classList.add('celula-x');
-        if (val === 'O') cel.classList.add('celula-o');
-        if (val)         cel.classList.add('celula-ocupada');
-        if (vencedoras.indexOf(i) !== -1) cel.classList.add('celula-vencedora');
-        if (!ativo)      cel.classList.add('celula-ocupada');
-      }
-    }
+  function iniciar(){
+    jogador='X';tabuleiro=Array(9).fill('');ativo=true;vencedoras=[];iaJogando=false;
+    var c=document.getElementById('tabuleiro-velha'),novo=c.cloneNode(false);
+    c.parentNode.replaceChild(novo,c);
+    for(var i=0;i<9;i++){var cel=document.createElement('div');cel.className='celula';cel.dataset.index=i;novo.appendChild(cel)}
+    novo.addEventListener('click',onClick);render();
+    setStatus(modoIA?'Sua vez: <span class="jogador-x">X</span>':'Vez do: <span class="jogador-x">X</span>');
+  }
 
-    function checar() {
-      for (var i = 0; i < COMBOS.length; i++) {
-        var a = COMBOS[i][0], b = COMBOS[i][1], c = COMBOS[i][2];
-        if (tabuleiro[a] && tabuleiro[a] === tabuleiro[b] && tabuleiro[a] === tabuleiro[c]) {
-          return COMBOS[i];
-        }
-      }
-      return null;
-    }
+  function setModo(ia){modoIA=ia;document.getElementById('btn-pvp').classList.toggle('ativo',!ia);document.getElementById('btn-ia').classList.toggle('ativo',ia);document.getElementById('dif-ia').classList.toggle('visivel',ia);iniciar()}
+  function setDif(d){dificuldade=d;document.querySelectorAll('.btn-dif-ia').forEach(function(b){b.classList.toggle('ativo',b.dataset.dif===d)});iniciar()}
 
-    function onClick(e) {
-      if (!ativo) return;
-      var cel = e.target.closest('.celula');
-      if (!cel) return;
-      var idx = parseInt(cel.dataset.index);
-      if (isNaN(idx) || tabuleiro[idx]) return;
+  return{iniciar,setModo,setDif};
+})();
 
-      tabuleiro[idx] = jogador;
+var mina=(function(){
+  var bombas=[],ativo=false,primeiro=true,cfg={};
+  function vizinhos(i){var v=[],lin=Math.floor(i/cfg.C),col=i%cfg.C;for(var dx=-1;dx<=1;dx++)for(var dy=-1;dy<=1;dy++){if(!dx&&!dy)continue;var nl=lin+dx,nc=col+dy;if(nl>=0&&nl<cfg.L&&nc>=0&&nc<cfg.C)v.push(nl*cfg.C+nc)}return v}
+  function gerarBombas(s){var p=vizinhos(s);p.push(s);while(bombas.length<cfg.qtdB){var r=Math.floor(Math.random()*cfg.L*cfg.C);if(bombas.indexOf(r)===-1&&p.indexOf(r)===-1)bombas.push(r)}}
+  function revelar(i){var g=document.getElementById('grid-mina'),el=g.children[i];if(!el||el.classList.contains('aberto')||el.textContent==='🚩')return;el.classList.add('aberto');var viz=vizinhos(i),qtd=viz.filter(function(v){return bombas.indexOf(v)!==-1}).length;if(qtd>0){el.textContent=qtd;el.style.color=['','#1565C0','#2E7D32','#C62828','#1A237E','#6D4C41','#00838F','#212121','#546E7A'][qtd]}else viz.forEach(function(v){revelar(v)})}
+  function encerrar(venceu){ativo=false;var s=document.getElementById('status-mina'),g=document.getElementById('grid-mina');if(venceu){s.innerHTML='<span class="vitoria-texto">VITÓRIA! 🎉</span>';vitorias++}else{s.innerHTML='<span class="derrota-texto">DERROTA! 💥</span>';bombas.forEach(function(b){var el=g.children[b];if(el){el.classList.add('bomba');el.textContent='💣'}});derrotas++}atualizarPlacar()}
+  function checarVitoria(){if(document.querySelectorAll('#grid-mina .quadrado.aberto').length===cfg.L*cfg.C-cfg.qtdB)encerrar(true)}
+  function handleClick(e){if(!ativo)return;var q=e.target.closest('.quadrado');if(!q)return;var idx=parseInt(q.dataset.index);if(e.button===2){if(!q.classList.contains('aberto'))q.textContent=q.textContent==='🚩'?'':'🚩';return}if(e.button!==0)return;if(q.textContent==='🚩'||q.classList.contains('aberto'))return;if(primeiro){primeiro=false;gerarBombas(idx)}if(bombas.indexOf(idx)!==-1){encerrar(false)}else{revelar(idx);checarVitoria()}}
+  function iniciar(L,C,qtdB){cfg={L,C,qtdB};bombas=[];ativo=true;primeiro=true;var s=document.getElementById('status-mina');if(s)s.innerHTML='';var old=document.getElementById('grid-mina'),novo=old.cloneNode(false);old.parentNode.replaceChild(novo,old);novo.style.gridTemplateColumns='repeat('+C+', 28px)';var frag=document.createDocumentFragment();for(var i=0;i<L*C;i++){var q=document.createElement('div');q.className='quadrado';q.dataset.index=i;frag.appendChild(q)}novo.appendChild(frag);novo.addEventListener('mousedown',handleClick);novo.addEventListener('contextmenu',function(e){e.preventDefault()})}
+  return{iniciar};
+})();
 
-      var combo = checar();
-      if (combo) {
-        ativo      = false;
-        vencedoras = combo;
-        render();
-        setStatus('<span class="vitoria-texto">Jogador ' + jogador + ' VENCEU! 🎉</span>');
-        vitorias++;
-        atualizarPlacar();
-        return;
-      }
-      if (tabuleiro.indexOf('') === -1) {
-        ativo = false;
-        render();
-        setStatus('<span class="empate-texto">Empate! 🤝</span>');
-        return;
-      }
-
-      jogador = jogador === 'X' ? 'O' : 'X';
-      render();
-      var cor = jogador === 'X' ? 'jogador-x' : 'jogador-o';
-      setStatus('Vez do: <span class="' + cor + '">' + jogador + '</span>');
-    }
-
-    function iniciar() {
-      jogador    = 'X';
-      tabuleiro  = Array(9).fill('');
-      ativo      = true;
-      vencedoras = [];
-
-      var container = document.getElementById('tabuleiro-velha');
-      // Remove listener antigo trocando o nó
-      var novo = container.cloneNode(false);
-      container.parentNode.replaceChild(novo, container);
-
-      for (var i = 0; i < 9; i++) {
-        var cel = document.createElement('div');
-        cel.className     = 'celula';
-        cel.dataset.index = i;
-        novo.appendChild(cel);
-      }
-      novo.addEventListener('click', onClick);
-
-      render();
-      setStatus('Vez do: <span class="jogador-x">X</span>');
-    }
-
-    return { iniciar: iniciar };
-  })();
-
-  // ================================================================
-  //  CAMPO MINADO
-  // ================================================================
-  var mina = (function() {
-    var bombas      = [];
-    var ativo       = false;
-    var primeiro    = true;
-    var cfg         = {};
-    var boundClick  = null;
-
-    function vizinhos(i) {
-      var v = [], lin = Math.floor(i / cfg.C), col = i % cfg.C;
-      for (var dx = -1; dx <= 1; dx++) {
-        for (var dy = -1; dy <= 1; dy++) {
-          if (dx === 0 && dy === 0) continue;
-          var nl = lin + dx, nc = col + dy;
-          if (nl >= 0 && nl < cfg.L && nc >= 0 && nc < cfg.C) v.push(nl * cfg.C + nc);
-        }
-      }
-      return v;
-    }
-
-    function gerarBombas(seguro) {
-      var proibidos = vizinhos(seguro);
-      proibidos.push(seguro);
-      while (bombas.length < cfg.qtdB) {
-        var r = Math.floor(Math.random() * cfg.L * cfg.C);
-        if (bombas.indexOf(r) === -1 && proibidos.indexOf(r) === -1) bombas.push(r);
-      }
-    }
-
-    function revelar(i) {
-      var grid = document.getElementById('grid-mina');
-      var el   = grid.children[i];
-      if (!el || el.classList.contains('aberto') || el.textContent === '🚩') return;
-      el.classList.add('aberto');
-      var viz = vizinhos(i);
-      var qtd = viz.filter(function(v){ return bombas.indexOf(v) !== -1; }).length;
-      if (qtd > 0) {
-        el.textContent = qtd;
-        el.style.color = ['','#1565C0','#2E7D32','#C62828','#1A237E','#6D4C41','#00838F','#212121','#546E7A'][qtd];
-      } else {
-        viz.forEach(function(v){ revelar(v); });
-      }
-    }
-
-    function encerrar(venceu) {
-      ativo = false;
-      var status = document.getElementById('status-mina');
-      var grid   = document.getElementById('grid-mina');
-      if (venceu) {
-        status.innerHTML = '<span class="vitoria-texto">VITÓRIA! 🎉</span>';
-        vitorias++;
-      } else {
-        status.innerHTML = '<span class="derrota-texto">DERROTA! 💥</span>';
-        bombas.forEach(function(b) {
-          var el = grid.children[b];
-          if (el) { el.classList.add('bomba'); el.textContent = '💣'; }
-        });
-        derrotas++;
-      }
-      atualizarPlacar();
-    }
-
-    function checarVitoria() {
-      var abertos = document.querySelectorAll('#grid-mina .quadrado.aberto').length;
-      if (abertos === cfg.L * cfg.C - cfg.qtdB) encerrar(true);
-    }
-
-    function handleClick(e) {
-      if (!ativo) return;
-      var q = e.target.closest('.quadrado');
-      if (!q) return;
-      var idx = parseInt(q.dataset.index);
-
-      if (e.button === 2) {
-        if (!q.classList.contains('aberto')) q.textContent = q.textContent === '🚩' ? '' : '🚩';
-        return;
-      }
-      if (e.button !== 0) return;
-      if (q.textContent === '🚩' || q.classList.contains('aberto')) return;
-
-      if (primeiro) { primeiro = false; gerarBombas(idx); }
-
-      if (bombas.indexOf(idx) !== -1) {
-        encerrar(false);
-      } else {
-        revelar(idx);
-        checarVitoria();
-      }
-    }
-
-    function iniciar(L, C, qtdB) {
-      cfg     = { L: L, C: C, qtdB: qtdB };
-      bombas  = [];
-      ativo   = true;
-      primeiro = true;
-
-      var status = document.getElementById('status-mina');
-      if (status) status.innerHTML = '';
-
-      var old = document.getElementById('grid-mina');
-      var novo = old.cloneNode(false);
-      old.parentNode.replaceChild(novo, old);
-
-      novo.style.gridTemplateColumns = 'repeat(' + C + ', 28px)';
-
-      var frag = document.createDocumentFragment();
-      for (var i = 0; i < L * C; i++) {
-        var q = document.createElement('div');
-        q.className     = 'quadrado';
-        q.dataset.index = i;
-        frag.appendChild(q);
-      }
-      novo.appendChild(frag);
-
-      novo.addEventListener('mousedown', handleClick);
-      novo.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-    }
-
-    return { iniciar: iniciar };
-  })();
-
-  // ================================================================
-  //  BIND DE EVENTOS (após o DOM estar pronto)
-  // ================================================================
-  document.addEventListener('DOMContentLoaded', function() {
-
-    // Navegação por data-ir
-    document.body.addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-ir]');
-      if (btn) irPara(btn.dataset.ir);
-    });
-
-    // Dificuldade do Campo Minado
-    document.body.addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-mina]');
-      if (btn) {
-        var parts = btn.dataset.mina.split(',');
-        mina.iniciar(+parts[0], +parts[1], +parts[2]);
-      }
-    });
-
-    // Reiniciar Jogo da Velha
-    document.getElementById('btn-reset-velha').addEventListener('click', function() {
-      velha.iniciar();
-    });
-
-    // Cadastro
-    document.getElementById('btn-cadastro').addEventListener('click', fazerCadastro);
-  });
-
-  </script>
+document.addEventListener('DOMContentLoaded',function(){
+  document.body.addEventListener('click',function(e){var b=e.target.closest('[data-ir]');if(b)irPara(b.dataset.ir)});
+  document.body.addEventListener('click',function(e){var b=e.target.closest('[data-mina]');if(b){var p=b.dataset.mina.split(',');mina.iniciar(+p[0],+p[1],+p[2])}});
+  document.getElementById('btn-reset-velha').addEventListener('click',function(){velha.iniciar()});
+  document.getElementById('btn-pvp').addEventListener('click',function(){velha.setModo(false)});
+  document.getElementById('btn-ia').addEventListener('click',function(){velha.setModo(true)});
+  document.querySelectorAll('.btn-dif-ia').forEach(function(b){b.addEventListener('click',function(){velha.setDif(b.dataset.dif)})});
+  document.getElementById('btn-cadastro').addEventListener('click',fazerCadastro);
+});
+</script>
 </body>
 </html>
